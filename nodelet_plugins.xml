@@ -1,0 +1,10 @@
+<library path="lib/libStellaTfMonitorNodelet">
+  <class 
+    name="stella_tf_monitor/StellaTfMonitorNodelet" 
+    type="stella_tf_monitor::StellaTfMonitorNodelet" 
+    base_class_type="nodelet::Nodelet">
+    <description>
+      tf monitor
+    </description>
+  </class>
+</library>
