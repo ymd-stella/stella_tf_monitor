@@ -1,43 +1,48 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.8)
 project(stella_tf_monitor)
 
-find_package(catkin REQUIRED COMPONENTS
-  roscpp
-  nodelet
+find_package(ament_cmake REQUIRED)
+find_package(class_loader REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rclcpp_components REQUIRED)
+find_package(pluginlib REQUIRED)
+find_package(diagnostic_updater REQUIRED)
+find_package(tf2_ros REQUIRED)
+
+set(dependencies
+  class_loader
+  rclcpp
+  rclcpp_components
   pluginlib
   diagnostic_updater
   tf2_ros
 )
 
-include_directories(
-  include
-  ${catkin_INCLUDE_DIRS}
+add_library(stella_tf_monitor SHARED
+  src/stella_tf_monitor.cpp)
+target_include_directories(stella_tf_monitor PRIVATE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
+ament_target_dependencies(stella_tf_monitor
+  ${dependencies}
+)
+rclcpp_components_register_node(stella_tf_monitor PLUGIN "stella_tf_monitor::StellaTfMonitor" EXECUTABLE stella_tf_monitor_node)
+
+install(
+  DIRECTORY include/
+  DESTINATION include
 )
 
-catkin_package()
-
-add_library(StellaTfMonitorNodelet src/stella_tf_monitor_nodelet.cpp)
-
-target_link_libraries(StellaTfMonitorNodelet
-  ${catkin_LIBRARIES})
-
-add_executable(${PROJECT_NAME}_node
-  src/${PROJECT_NAME}_node.cpp)
-
-target_link_libraries(${PROJECT_NAME}_node
-  StellaTfMonitorNodelet)
-
-install(TARGETS ${PROJECT_NAME}_node StellaTfMonitorNodelet
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-  )
-
-install(DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
+install(TARGETS
+  stella_tf_monitor
+  EXPORT export_${PROJECT_NAME}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include)
 
 install(DIRECTORY launch/
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+  DESTINATION share/${PROJECT_NAME})
 
-install(FILES nodelet_plugins.xml
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+ament_package()

@@ -1,4 +1,4 @@
-FROM ros:noetic
+FROM ros:humble
 ENV DEBIAN_FRONTEND noninteractive
 ENV DEBCONF_NOWARNINGS yes
 ARG NUM_THREADS=1
@@ -29,8 +29,8 @@ RUN set -x && \
   apt-get autoremove -y -qq && \
   rm -rf /var/lib/apt/lists/*
 
-WORKDIR /catkin_ws
-COPY . /catkin_ws/src/stella_tf_monitor
+WORKDIR /ros_ws
+COPY . /ros_ws/src/stella_tf_monitor
 
 RUN set -x && \
   : "build ROS packages" && \
@@ -38,6 +38,6 @@ RUN set -x && \
   catkin_make -j${NUM_THREADS}"
 
 RUN set -x && \
-  sh -c "echo 'source /opt/ros/${ROS_DISTRO}/setup.bash\nsource /catkin_ws/devel/setup.bash' >> ~/.bashrc"
+  sh -c "echo 'source /opt/ros/${ROS_DISTRO}/setup.bash\nsource /ros_ws/install/setup.bash' >> ~/.bashrc"
 
 CMD ["bash"]

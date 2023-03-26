@@ -1,0 +1,37 @@
+launch:
+  - arg:
+      name: "use_sim_time"
+      default: "false"
+  - node:
+      pkg: "stella_tf_monitor"
+      exec: "stella_tf_monitor_node"
+      name: "map_to_odom_tf_monitor"
+      param:
+        - name: "use_sim_time"
+          value: $(var use_sim_time)
+        - name: "target_frame"
+          value: "map"
+        - name: "source_frame"
+          value: "odom"
+  - node:
+      pkg: "stella_tf_monitor"
+      exec: "stella_tf_monitor_node"
+      name: "odom_to_base_link_tf_monitor"
+      param:
+        - name: "use_sim_time"
+          value: $(var use_sim_time)
+        - name: "target_frame"
+          value: "odom"
+        - name: "source_frame"
+          value: "base_link"
+  - node:
+      pkg: "stella_tf_monitor"
+      exec: "stella_tf_monitor_node"
+      name: "map_to_base_link_tf_monitor"
+      param:
+        - name: "use_sim_time"
+          value: $(var use_sim_time)
+        - name: "target_frame"
+          value: "map"
+        - name: "source_frame"
+          value: "base_link"
